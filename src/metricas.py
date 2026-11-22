@@ -165,8 +165,8 @@ def ajuste_lei_potencia(graus, k_min):
         gamma = 1 + n [ sum ln(k_i / (k_min - 1/2)) ]^-1 ,  k_i >= k_min
     e distancia KS entre a CCDF empirica e a CCDF do modelo continuo aproximado
     P(K >= k) = ((k - 1/2) / (k_min - 1/2))^(1 - gamma) (mesma aproximacao).
-    Versao da 1a entrega, mantida para comparacao; a aproximacao so e boa para
-    k_min >~ 6 (Clauset et al., 2009). O ajuste usado agora e ajuste_discreto_exato."""
+    A aproximacao so e boa para k_min >~ 6 (Clauset et al., 2009); o ajuste usado nos
+    resultados e ajuste_discreto_exato."""
     cauda = sorted(k for k in graus if k >= k_min)
     n = len(cauda)
     gamma = 1 + n / sum(math.log(k / (k_min - 0.5)) for k in cauda)

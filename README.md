@@ -10,12 +10,7 @@ f(M) = (soma dos dígitos de M) × (últimos 2 dígitos + 1) mod 129
 
 G115 é o *web-BeerAdvocate* (<https://snap.stanford.edu/data/web-BeerAdvocate.html>).
 
-Documentos do repositório:
-
-- [`artigo/223115843.pdf`](artigo/223115843.pdf): relatório.
-- [`GUIA_DE_ESTUDO.md`](GUIA_DE_ESTUDO.md): explicação de todo o trabalho.
-- [`AUDITORIA_FINAL.md`](AUDITORIA_FINAL.md): problemas encontrados, correções e pendências.
-- [`REQUISITOS.md`](REQUISITOS.md): conferência do enunciado.
+Relatório: [`artigo/223115843.pdf`](artigo/223115843.pdf).
 
 ## Modelagem
 
@@ -52,7 +47,6 @@ src/
   gerar_artigo.py        gera as tabelas/macros LaTeX do artigo a partir de results/
 tests/test_algoritmos.py  validação: casos conhecidos e comparação com NetworkX (13 testes)
 results/             JSON, CSV e figuras gerados
-results/anteriores_v1/  resultados da 1ª versão (antes da auditoria), para comparação
 artigo/              artigo (template WebMedia), PDF final: 223115843.pdf
 ```
 

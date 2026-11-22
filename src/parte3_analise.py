@@ -76,7 +76,7 @@ def erdos_renyi(n, m, semente):
 
 
 def bipartido_configuracao(adj, U, semente):
-    """Modelo de configuracao bipartido (1a entrega, mantido so para comparacao):
+    """Modelo de configuracao bipartido:
     embaralha as 'pontas' do lado das cervejas e pareia com as dos usuarios.
     Pares repetidos sao descartados (contados), o que REDUZ os graus dos vertices de grau
     alto: a sequencia de graus NAO e preservada. Substituido por bipartido_trocas."""
@@ -272,7 +272,7 @@ def lei_potencia(adj, U):
         gof = bondade_ajuste_bootstrap(graus, B_BOOTSTRAP, SEMENTE)
         obs = gof["observado"]
         candidatos = sorted(set(g for g in graus if g <= 1000))
-        aprox = melhor_k_min(graus, candidatos)  # metodo aproximado da 1a entrega (comparacao)
+        aprox = melhor_k_min(graus, candidatos)
         ref = powerlaw.Fit(graus, discrete=True, xmin=obs["k_min"], verbose=False)
         comp = {}
         for alt in ("lognormal", "exponential", "truncated_power_law"):

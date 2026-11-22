@@ -16,12 +16,6 @@ RES = os.path.join(RAIZ, "results")
 OUT = os.path.join(RAIZ, "artigo", "gerado")
 LINK_REPOSITORIO = "https://github.com/ViniciusSchedler/tp-grafos-g115"
 
-# Declaracao de uso de IA: descreve apenas o que de fato aconteceu.
-DECLARACAO_IA = (
-    "O código, os experimentos, as figuras e o texto foram produzidos com o assistente de programação "
-    "Claude Code (Anthropic), a partir das instruções do autor, que definiu os requisitos do trabalho, "
-    "escolheu a modelagem bipartida e é responsável pelo conteúdo entregue.")
-
 
 def ler(nome):
     with open(os.path.join(RES, nome), encoding="utf-8") as f:
@@ -197,7 +191,6 @@ def main():
         "SO": "Windows 11 Home 64 bits",
         "PythonVersao": amb["python"].split()[0],
         "LinkRepositorio": LINK_REPOSITORIO,
-        "DeclaracaoIA": DECLARACAO_IA,
     }
     m["Descoberta"] = (
         f"A conectividade da rede depende de um núcleo pequeno de vértices. Os "
