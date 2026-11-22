@@ -16,15 +16,11 @@ RES = os.path.join(RAIZ, "results")
 OUT = os.path.join(RAIZ, "artigo", "gerado")
 LINK_REPOSITORIO = "https://github.com/ViniciusSchedler/tp-grafos-g115"
 
-# Declaracao de uso de IA: descreve apenas o que de fato aconteceu. Se o autor revisar o codigo e
-# o texto, pode acrescentar aqui a descricao dessa revisao.
+# Declaracao de uso de IA: descreve apenas o que de fato aconteceu.
 DECLARACAO_IA = (
-    "Este trabalho foi desenvolvido com uso intensivo do assistente de programação Claude Code "
-    "(Anthropic, modelo Claude Opus 5.5). A partir das instruções do autor, o assistente escreveu o "
-    "código, executou os experimentos, gerou as figuras e redigiu o texto. O autor definiu os requisitos "
-    "e as restrições do trabalho e escolheu, entre as alternativas apresentadas, a modelagem bipartida "
-    "usuário--cerveja. Todos os números do texto são gerados automaticamente a partir dos arquivos de "
-    "resultados do repositório. O autor é responsável pelo conteúdo entregue.")
+    "O código, os experimentos, as figuras e o texto foram produzidos com o assistente de programação "
+    "Claude Code (Anthropic), a partir das instruções do autor, que definiu os requisitos do trabalho, "
+    "escolheu a modelagem bipartida e é responsável pelo conteúdo entregue.")
 
 
 def ler(nome):

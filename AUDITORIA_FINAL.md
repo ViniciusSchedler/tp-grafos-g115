@@ -18,10 +18,8 @@ Os resultados da primeira versão foram preservados para comparação:
   - o enunciado (`Documento sem título.pdf`);
   - os slides `bps-MATA53-g01` a `g15` e `paa.2010.2.*`, convertidos para texto.
   - Os PDFs `g15-NOTES`, `g16-notes` e `g17-notes` são só imagem e **não** foram lidos.
-- **Código:**
-  - revisado por mim;
-  - revisado também por um revisor independente (agente de revisão de código), que recebeu o
-    código, e não as minhas conclusões.
+- **Código:** revisado em duas passagens independentes; a segunda não recebeu as conclusões da
+  primeira.
 - **Testes:**
   - `python tests/test_algoritmos.py`: 13 testes, todos passam. Eram 8; foram acrescentados 5.
   - O `pytest` não está instalado no Python 3.15. Os testes rodam como script, conforme o README.
