@@ -1,0 +1,43 @@
+{
+  "V_mcc": 99356,
+  "E_mcc": 1571439,
+  "bfs_origem": 73105,
+  "bfs_excentricidade_origem": 6,
+  "bfs_vertices_por_nivel": [
+    1,
+    5,
+    3966,
+    28688,
+    62006,
+    4653,
+    37
+  ],
+  "dfs_arvores_no_grafo_completo": 42,
+  "euler_grafo_completo": {
+    "vertices_grau_impar": 62054,
+    "conexo_ignorando_isolados": false,
+    "circuito_euleriano": false,
+    "caminho_euleriano": false
+  },
+  "euler_mcc": {
+    "vertices_grau_impar": 61972,
+    "conexo_ignorando_isolados": true,
+    "circuito_euleriano": false,
+    "caminho_euleriano": false
+  },
+  "dijkstra_origem": 73105,
+  "dijkstra_dist_max": 16.0,
+  "dijkstra_dist_media": 5.507292875044034,
+  "bellman_ford_sem_ciclo_negativo": true,
+  "bellman_ford_igual_dijkstra": true,
+  "bellman_ford_passadas_ate_estabilizar": 5,
+  "tarjan_articulacoes": 7260,
+  "tarjan_pontes": 34340,
+  "tarjan_pontes_com_folha": 34185,
+  "agm_peso_prim": 177260.3334,
+  "agm_peso_kruskal": 177260.3334,
+  "agm_arestas": [
+    99355,
+    99355
+  ]
+}

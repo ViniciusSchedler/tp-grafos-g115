@@ -34,10 +34,43 @@
   "tarjan_articulacoes": 7260,
   "tarjan_pontes": 34340,
   "tarjan_pontes_com_folha": 34185,
+  "tarjan_cfc_grafo_completo": 42,
   "agm_peso_prim": 177260.3334,
   "agm_peso_kruskal": 177260.3334,
   "agm_arestas": [
     99355,
     99355
-  ]
+  ],
+  "bellman_ford_mcc": {
+    "passadas_por_origem": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "tempo_por_passada_s": {
+      "n": 10,
+      "media": 0.2810175116658987,
+      "desvio_padrao": 0.006071786393762728,
+      "ic_inf": 0.2766740173375418,
+      "ic_sup": 0.2853610059942556,
+      "distribuicao": "t",
+      "valor_critico": 2.262157162798205
+    },
+    "estimativa_sem_parada_s": {
+      "n": 10,
+      "media": 27920.77588907703,
+      "desvio_padrao": 603.2684089386894,
+      "ic_inf": 27489.223666588805,
+      "ic_sup": 28352.328111565257,
+      "distribuicao": "t",
+      "valor_critico": 2.262157162798205
+    }
+  }
 }

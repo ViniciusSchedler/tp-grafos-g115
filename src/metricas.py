@@ -164,7 +164,9 @@ def ajuste_lei_potencia(graus, k_min):
     """MLE discreto aproximado (Clauset, Shalizi & Newman, 2009, eq. 3.7):
         gamma = 1 + n [ sum ln(k_i / (k_min - 1/2)) ]^-1 ,  k_i >= k_min
     e distancia KS entre a CCDF empirica e a CCDF do modelo continuo aproximado
-    P(K >= k) = (k / k_min)^(1 - gamma) (mesma aproximacao)."""
+    P(K >= k) = ((k - 1/2) / (k_min - 1/2))^(1 - gamma) (mesma aproximacao).
+    Versao da 1a entrega, mantida para comparacao; a aproximacao so e boa para
+    k_min >~ 6 (Clauset et al., 2009). O ajuste usado agora e ajuste_discreto_exato."""
     cauda = sorted(k for k in graus if k >= k_min)
     n = len(cauda)
     gamma = 1 + n / sum(math.log(k / (k_min - 0.5)) for k in cauda)
@@ -185,3 +187,93 @@ def melhor_k_min(graus, candidatos):
     melhores = [ajuste_lei_potencia(graus, k) for k in candidatos
                 if sum(1 for g in graus if g >= k) >= 50]
     return min(melhores, key=lambda r: r["ks"])
+
+
+# ------------------------------------------- lei de potencia: MLE discreto exato
+# A normalizacao da lei de potencia discreta P(k) = k^-gamma / zeta(gamma, k_min), k >= k_min,
+# usa a funcao zeta de Hurwitz zeta(gamma, k_min) = sum_{k >= k_min} k^-gamma (scipy).
+def _preparar(graus):
+    import numpy as np
+    x = np.sort(np.asarray(graus, dtype=float))
+    suf = np.concatenate([np.cumsum(np.log(x)[::-1])[::-1], [0.0]])  # suf[i] = sum ln x[i:]
+    vals, cont = np.unique(x, return_counts=True)
+    return x, suf, vals, cont
+
+
+def _ajuste_kmin(prep, k_min):
+    """MLE exato para um k_min fixo: maximiza
+        ln L(gamma) = -n ln zeta(gamma, k_min) - gamma * sum ln k_i
+    e calcula a distancia KS entre a CCDF empirica e a CCDF exata
+        P(K >= k) = zeta(gamma, k) / zeta(gamma, k_min)."""
+    import numpy as np
+    from scipy.optimize import minimize_scalar
+    from scipy.special import zeta
+    x, suf, vals, cont = prep
+    i = int(np.searchsorted(x, k_min))
+    n = len(x) - i
+    S = suf[i]
+    res = minimize_scalar(lambda g: n * math.log(zeta(g, k_min)) + g * S, bounds=(1.0001, 8.0),
+                          method="bounded", options={"xatol": 1e-8})
+    g = float(res.x)
+    j = int(np.searchsorted(vals, k_min))
+    kv, c = vals[j:], cont[j:]
+    emp = 1.0 - (np.cumsum(c) - c) / n                  # P(K >= k) empirica nos valores observados
+    emp_dep = np.append(emp[1:], 0.0)                   # empirica logo depois de cada valor
+    z0 = zeta(g, k_min)
+    mod = zeta(g, kv) / z0                              # P(K >= k) do modelo
+    mod_dep = zeta(g, kv + 1) / z0                      # P(K >= k+1) do modelo
+    ks = float(max(np.max(np.abs(emp - mod)), np.max(np.abs(emp_dep - mod_dep))))
+    h = 1e-4                                            # erro padrao: 1 / sqrt(n * d2/dg2 ln zeta)
+    l2 = (math.log(zeta(g + h, k_min)) - 2 * math.log(z0) + math.log(zeta(g - h, k_min))) / h ** 2
+    return {"gamma": g, "erro_padrao": 1 / math.sqrt(n * l2), "k_min": float(k_min), "n_cauda": n, "ks": ks}
+
+
+def ajuste_discreto_exato(graus, k_max_candidato=1000, min_cauda=50):
+    """Metodo de Clauset et al. (2009): MLE exato para cada k_min candidato (valores
+    observados <= k_max_candidato com pelo menos 'min_cauda' vertices na cauda) e escolha
+    do k_min de menor distancia KS."""
+    prep = _preparar(graus)
+    x, vals = prep[0], prep[2]
+    cands = [k for k in vals if k <= k_max_candidato and len(x) - x.searchsorted(k) >= min_cauda]
+    return min((_ajuste_kmin(prep, k) for k in cands), key=lambda r: r["ks"])
+
+
+def _amostra_lei_potencia(rng, m, gamma, k_min, k_tab=10 ** 6):
+    """m valores da lei de potencia discreta por inversao da CCDF exata, tabelada ate
+    k_tab; acima disso (probabilidade ~1e-3) usa a aproximacao continua de Clauset et al.
+    (2009, eq. D.6), precisa para k grande."""
+    import numpy as np
+    from scipy.special import zeta
+    ks = np.arange(k_min, k_tab + 1, dtype=float)
+    ccdf = zeta(gamma, ks) / zeta(gamma, k_min)          # decrescente, ccdf[0] = 1
+    u = rng.random(m)
+    cont = len(ccdf) - np.searchsorted(ccdf[::-1], u, side="left")  # quantos k tem P(K>=k) >= u
+    out = k_min + cont - 1.0
+    fora = cont == len(ccdf)
+    if fora.any():
+        cont_ = np.floor((k_min - 0.5) * u[fora] ** (-1 / (gamma - 1)) + 0.5)
+        out[fora] = np.maximum(cont_, k_tab + 1)
+    return out
+
+
+def bondade_ajuste_bootstrap(graus, B, semente, k_max_candidato=1000):
+    """Teste de bondade de ajuste ABSOLUTO de Clauset et al. (2009, sec. 4.1): gera B
+    conjuntos sinteticos do mesmo tamanho (valores < k_min reamostrados dos dados; cauda
+    sorteada da lei de potencia ajustada), refaz todo o ajuste (inclusive a escolha de
+    k_min) e devolve p = fracao de conjuntos com KS >= KS observado.
+    p <= 0,1 => a lei de potencia e descartada como modelo dos dados."""
+    import numpy as np
+    obs = ajuste_discreto_exato(graus, k_max_candidato)
+    x = np.asarray(graus, dtype=float)
+    abaixo = x[x < obs["k_min"]]
+    n, ntail = len(x), obs["n_cauda"]
+    rng = np.random.default_rng(semente)
+    ks_sint = []
+    for _ in range(B):
+        m = int(rng.binomial(n, ntail / n))
+        sint = np.concatenate([rng.choice(abaixo, n - m) if len(abaixo) else np.empty(0),
+                               _amostra_lei_potencia(rng, m, obs["gamma"], obs["k_min"])])
+        ks_sint.append(ajuste_discreto_exato(sint, k_max_candidato)["ks"])
+    p = sum(1 for k in ks_sint if k >= obs["ks"]) / B
+    return {"observado": obs, "B": B, "p_valor": p, "ks_sinteticos_max": max(ks_sint),
+            "ks_sinteticos_media": sum(ks_sint) / B}

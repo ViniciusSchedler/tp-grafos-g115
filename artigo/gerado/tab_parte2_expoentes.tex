@@ -1,20 +1,21 @@
 \begin{table}[t]
-\caption{Inclinação de $\log(\text{tempo})$ contra $\log f(V,E)$ (custo teórico; esperado $\approx 1$) e contra $\log V$, no experimento B.}
+\caption{Inclinação de $\log(\text{tempo})$ contra $\log f(V,E)$ (custo teórico; esperado $\approx 1$), ajustada sobre as médias por tamanho e sobre cada repetição do experimento B, e contra $\log V$ (médias).}
 \label{tab:p2exp}
-\small
-\begin{tabular}{llrr}
+\footnotesize
+\begin{tabular}{@{}llrrr@{}}
 \toprule
-Algoritmo & $f(V,E)$ & vs.\ $f$ & vs.\ $V$ \\
+Algoritmo & $f(V,E)$ & médias & repetições & vs.\ $V$ \\
 \midrule
-BFS & $V+E$ & 1{,}18 & 0{,}88 \\
-DFS & $V+E$ & 1{,}06 & 0{,}79 \\
-Euler & $V+E$ & 1{,}13 & 0{,}85 \\
-Tarjan & $V+E$ & 1{,}09 & 0{,}81 \\
-Dijkstra & $(V+E)\log V$ & 1{,}03 & 0{,}88 \\
-Prim & $E\log V$ & 1{,}06 & 0{,}89 \\
-Kruskal & $E\log V$ & 0{,}76 & 0{,}61 \\
-Bellman-Ford & $VE$ & 1{,}06 & 3{,}03 \\
-Floyd-Warshall & $V^3$ & 1{,}00 & 3{,}00 \\
+BFS & $V+E$ & 1{,}18 & 0{,}90 & 0{,}88 \\
+DFS & $V+E$ & 1{,}06 & 0{,}97 & 0{,}79 \\
+Eulerianidade & $V+E$ & 1{,}13 & 0{,}82 & 0{,}85 \\
+Tarjan (art./pontes) & $V+E$ & 1{,}09 & 1{,}00 & 0{,}81 \\
+Tarjan (CFC) & $V+E$ & 1{,}15 & 1{,}04 & 0{,}86 \\
+Dijkstra & $(V+E)\log V$ & 1{,}03 & 0{,}88 & 0{,}88 \\
+Prim & $E\log V$ & 1{,}06 & 0{,}82 & 0{,}89 \\
+Kruskal & $E\log V$ & 0{,}76 & 1{,}00 & 0{,}61 \\
+Bellman-Ford & $VE$ & 1{,}06 & 1{,}02 & 3{,}03 \\
+Floyd-Warshall & $V^3$ & 1{,}00 & 1{,}00 & 3{,}00 \\
 \bottomrule
 \end{tabular}
 \end{table}

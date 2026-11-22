@@ -130,9 +130,10 @@ def arcos_de(adj, peso):
 
 
 def bellman_ford(n, arcos, s, parar_cedo=False):
-    """Bellman-Ford(G, w, s) do slide. Devolve (VERDADE/FALSO, d, pi).
+    """Bellman-Ford(G, w, s) do slide. Devolve (VERDADE/FALSO, d, pi, passadas).
     parar_cedo=True interrompe quando uma passada inteira nao altera d[]
-    (resultado identico; so evita passadas inuteis)."""
+    (resultado identico; so evita passadas inuteis). 'passadas' inclui essa ultima
+    passada sem alteracao; a verificacao final de ciclo negativo nao e contada."""
     d, pi = inicia_origem_unica(n, s)
     passadas = 0
     for _ in range(n - 1):
@@ -207,7 +208,7 @@ def tarjan_articulacoes_pontes(adj):
                     if v == raiz:
                         filhos_raiz += 1
                     pilha.append((u, 0))
-                elif u != pi[v]:  # aresta de retorno
+                elif u != pi[v]:  # aresta de retorno (grafo simples: em multigrafo, uma aresta paralela ao pai seria ignorada)
                     low[v] = min(low[v], d[u])
             else:
                 pilha.pop()
@@ -221,6 +222,61 @@ def tarjan_articulacoes_pontes(adj):
         if filhos_raiz >= 2:
             articulacao[raiz] = True
     return [v for v in range(n) if articulacao[v]], pontes
+
+
+# ------------------ Tarjan: componentes fortemente conexas  O(V + E)
+def tarjan_cfc(adj):
+    """Tarjan (1972) para componentes fortemente conexas (CFC) de um grafo DIRIGIDO
+    (adj[v] = sucessores de v), com uma unica DFS.
+    low[v] = menor d[] alcancavel a partir da subarvore de v por arcos da arvore
+    seguidos de no maximo um arco para um vertice que ainda esta na pilha P.
+    Se low[v] == d[v], v e a 'raiz' de uma CFC: desempilha P ate v.
+    Um grafo nao direcionado e tratado como dirigido simetrico (cada aresta {u,v} vira
+    os arcos (u,v) e (v,u)); nesse caso as CFC coincidem com as componentes conexas.
+    Devolve (comp, numero_de_cfc), com comp[v] = indice da CFC de v."""
+    n = len(adj)
+    d = [0] * n  # 0 = BRANCO
+    low = [0] * n
+    na_pilha = [False] * n
+    comp = [-1] * n
+    P = []
+    tempo = 0
+    ncfc = 0
+    for raiz in range(n):
+        if d[raiz]:
+            continue
+        tempo += 1
+        d[raiz] = low[raiz] = tempo
+        P.append(raiz)
+        na_pilha[raiz] = True
+        pilha = [(raiz, 0)]
+        while pilha:
+            v, i = pilha[-1]
+            if i < len(adj[v]):
+                pilha[-1] = (v, i + 1)
+                u = adj[v][i]
+                if d[u] == 0:  # arco da arvore: equivale a chamar a visita de u
+                    tempo += 1
+                    d[u] = low[u] = tempo
+                    P.append(u)
+                    na_pilha[u] = True
+                    pilha.append((u, 0))
+                elif na_pilha[u]:  # arco para vertice da CFC ainda aberta
+                    low[v] = min(low[v], d[u])
+            else:  # fim da visita de v
+                pilha.pop()
+                if low[v] == d[v]:
+                    while True:
+                        w = P.pop()
+                        na_pilha[w] = False
+                        comp[w] = ncfc
+                        if w == v:
+                            break
+                    ncfc += 1
+                if pilha:
+                    p = pilha[-1][0]
+                    low[p] = min(low[p], low[v])
+    return comp, ncfc
 
 
 # ----------------------------------------------------- Prim  O(E log V)

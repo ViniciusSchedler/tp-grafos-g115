@@ -1,20 +1,22 @@
 \begin{table}[t]
-\caption{Ajuste de lei de potência ($\hat\gamma \pm$ erro padrão) e razão de verossimilhança normalizada $R$ (lei de potência vs.\ alternativa; $R<0$ favorece a alternativa).}
+\caption{Lei de potência discreta: MLE exato ($\hat\gamma\pm$ erro padrão), $k_{\min}$ pela menor distância KS, teste de bondade de ajuste por \textit{bootstrap} ($p$; $p\le 0{,}1$ rejeita a lei de potência) e razão de verossimilhança normalizada $R$ contra alternativas ($R<0$ favorece a alternativa).}
 \label{tab:pl}
-\small
-\begin{tabular}{lrrr}
+\footnotesize
+\begin{tabular}{@{}lrrr@{}}
 \toprule
  & Todos & Usuários & Cervejas \\
 \midrule
-$\hat\gamma$ & 1{,}554 $\pm$ 0{,}002 & 1{,}474 $\pm$ 0{,}003 & 1{,}638 $\pm$ 0{,}004 \\
-$k_{\min}$ (KS) & 2 & 2 & 3 \\
-vértices na cauda & 65.171 & 22.939 & 31.838 \\
-distância KS & 0{,}026 & 0{,}051 & 0{,}020 \\
-$\alpha$ (\texttt{powerlaw}) & 1{,}565 & 1{,}481 & 1{,}644 \\
-$R$ vs.\ exponencial & 94{,}7 & 57{,}0 & 62{,}6 \\
-$R$ vs.\ lognormal & -27{,}6 & -25{,}0 & -15{,}5 \\
-$R$ vs.\ l.p.\ truncada & -41{,}4 & -32{,}8 & -25{,}7 \\
+$\hat\gamma$ & 1{,}565 $\pm$ 0{,}002 & 1{,}448 $\pm$ 0{,}002 & 1{,}625 $\pm$ 0{,}003 \\
+$k_{\min}$ & 2 & 1 & 2 \\
+$n$ com $k\ge k_{\min}$ & 65.171 & 33.387 & 42.232 \\
+distância KS ($D$) & 0{,}025 & 0{,}045 & 0{,}020 \\
+maior $D$ sintético & 0{,}004 & 0{,}006 & 0{,}005 \\
+$p$ ($B=500$) & 0{,}000 & 0{,}000 & 0{,}000 \\
+$\alpha$ (\texttt{powerlaw}) & 1{,}565 & 1{,}448 & 1{,}625 \\
+$R$ vs.\ exponencial & 94{,}7 & 75{,}1 & 71{,}6 \\
+$R$ vs.\ lognormal & -27{,}6 & -29{,}0 & -17{,}2 \\
+$R$ vs.\ truncada & -41{,}4 & -36{,}9 & -27{,}9 \\
 \bottomrule
-\multicolumn{4}{l}{\footnotesize Em todos os testes, $p \le 4{,}4\times 10^{-54}$.}
+\multicolumn{4}{@{}l}{\footnotesize Razões de verossimilhança: $p \le 2{,}6\times 10^{-66}$ em todos os testes.}
 \end{tabular}
 \end{table}

@@ -180,6 +180,98 @@ def test_metricas_contra_networkx():
     assert eh_bipartido(adjB)
 
 
+# ------------------------------------------- Tarjan: componentes fortemente conexas
+def test_tarjan_cfc():
+    from algoritmos import tarjan_cfc
+    # exemplo classico (CLRS fig. 22.9): a..h = 0..7; CFC {a,b,e}, {c,d}, {f,g}, {h}
+    a, b, c, d, e, f, g, h = range(8)
+    arcos = [(a, b), (b, c), (b, e), (b, f), (c, d), (c, g), (d, c), (d, h), (e, a), (e, f),
+             (f, g), (g, f), (g, h), (h, h)]
+    adj = [[] for _ in range(8)]
+    for u, v in arcos:
+        adj[u].append(v)
+    comp, k = tarjan_cfc(adj)
+    grupos = {frozenset(v for v in range(8) if comp[v] == i) for i in range(k)}
+    assert grupos == {frozenset({a, b, e}), frozenset({c, d}), frozenset({f, g}), frozenset({h})}
+    # grafos dirigidos aleatorios contra o NetworkX
+    for semente in range(20):
+        rng = random.Random(semente)
+        n = 30 + 4 * semente
+        adj = [[] for _ in range(n)]
+        G = nx.DiGraph()
+        G.add_nodes_from(range(n))
+        for _ in range(int(1.5 * n)):
+            u, v = rng.randrange(n), rng.randrange(n)
+            adj[u].append(v)
+            G.add_edge(u, v)
+        comp, k = tarjan_cfc(adj)
+        ref = {frozenset(c) for c in nx.strongly_connected_components(G)}
+        assert k == len(ref)
+        assert {frozenset(v for v in range(n) if comp[v] == i) for i in range(k)} == ref
+    # grafo nao direcionado (dirigido simetrico): CFC = componentes conexas
+    adj, _ = grafo_aleatorio(80, 70, semente=5)
+    _, k = tarjan_cfc(adj)
+    assert k == nx.number_connected_components(para_nx(adj, [[1] * len(x) for x in adj]))
+
+
+# ------------------------------------------- diametro/raio em arvores e caminhos
+def test_takes_kosters_arvores():
+    from metricas import diametro_raio_exatos
+    for semente in range(30):
+        T = nx.random_labeled_tree(20 + semente, seed=semente)
+        adj = [list(T.neighbors(v)) for v in range(T.number_of_nodes())]
+        diam, raio, _ = diametro_raio_exatos(adj)
+        assert diam == nx.diameter(T) and raio == nx.radius(T)
+    P = [[1]] + [[i - 1, i + 1] for i in range(1, 9)] + [[8]]  # caminho com 10 vertices
+    assert diametro_raio_exatos(P)[:2] == (9, 5)
+
+
+# ------------------------------------------- geradores da Parte III
+def test_geradores_parte3():
+    from collections import Counter
+
+    from parte3_analise import bipartido_trocas, watts_strogatz
+    # Watts-Strogatz: exatamente n*k/2 arestas, sem lacos nem repeticoes
+    for p in (0.0, 0.1, 0.5):
+        adj = watts_strogatz(300, 10, p, semente=1)
+        pares = [frozenset((u, v)) for u in range(300) for v in adj[u]]
+        assert len(pares) == 2 * 1500 and all(len(x) == 2 for x in pares)
+        assert all(c == 2 for c in Counter(pares).values())
+    # trocas bipartidas: mesmos graus de cada vertice, grafo simples e bipartido
+    from networkx.algorithms import bipartite
+    B = bipartite.random_graph(40, 60, 0.15, seed=4)
+    adj = [list(B.neighbors(v)) for v in range(100)]
+    novo, aceitas, restantes = bipartido_trocas(adj, 40, 20, semente=2)
+    assert aceitas > 0 and restantes < 0.5
+    assert all(len(novo[v]) == len(adj[v]) for v in range(100))
+    assert all(len(set(novo[v])) == len(novo[v]) for v in range(100))
+    assert all((u < 40) != (v < 40) for u in range(100) for v in novo[u])
+
+
+# ------------------------------------------- lei de potencia e IC
+def test_lei_potencia_exata_contra_powerlaw():
+    import numpy as np
+    import powerlaw
+    from metricas import _ajuste_kmin, _amostra_lei_potencia, _preparar
+    x = _amostra_lei_potencia(np.random.default_rng(0), 5000, 2.3, 4)
+    r = _ajuste_kmin(_preparar(x), 4)
+    ref = powerlaw.Fit(x, discrete=True, xmin=4, verbose=False).power_law
+    assert abs(r["gamma"] - ref.alpha) < 1e-3 and abs(r["ks"] - ref.D) < 1e-3
+    assert abs(r["gamma"] - 2.3) < 4 * r["erro_padrao"]
+
+
+def test_intervalo_de_confianca():
+    from scipy import stats
+
+    from estatistica import resumo
+    xs = [1.0, 2.0, 3.0, 4.0, 5.0]                 # n < 30 -> t-Student com 4 g.l.
+    r = resumo(xs)
+    assert r["distribuicao"] == "t" and math.isclose(r["valor_critico"], stats.t.ppf(0.975, 4))
+    assert math.isclose(r["ic_sup"] - r["media"], stats.t.ppf(0.975, 4) * math.sqrt(2.5) / math.sqrt(5))
+    r = resumo([float(i % 7) for i in range(40)])  # n >= 30 -> Normal
+    assert r["distribuicao"] == "Z" and math.isclose(r["valor_critico"], stats.norm.ppf(0.975))
+
+
 if __name__ == "__main__":
     testes = [(nome, fn) for nome, fn in sorted(globals().items()) if nome.startswith("test_")]
     for nome, fn in testes:

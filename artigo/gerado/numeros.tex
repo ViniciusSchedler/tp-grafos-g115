@@ -10,6 +10,7 @@
 \newcommand{\DataDownload}{22/11/2026}
 \newcommand{\NBytesBruto}{445.475.306}
 \newcommand{\DataMin}{22/08/1996}
+\newcommand{\DataMax}{11/01/2012}
 \newcommand{\GrauMax}{5.782}
 \newcommand{\GrauMedio}{31{,}61}
 \newcommand{\GrauMedioU}{47{,}07}
@@ -22,6 +23,7 @@
 \newcommand{\NComponentes}{42}
 \newcommand{\NCompPequenas}{41}
 \newcommand{\MCCVertices}{99.356}
+\newcommand{\MCCArestas}{1.571.439}
 \newcommand{\MCCPercent}{99{,}92\%}
 \newcommand{\Diametro}{9}
 \newcommand{\Raio}{5}
@@ -34,56 +36,86 @@
 \newcommand{\VizVertices}{250}
 \newcommand{\VizArestas}{436}
 \newcommand{\DFSArvores}{42}
+\newcommand{\TarjanCFC}{42}
 \newcommand{\EulerImpares}{62.054}
 \newcommand{\EulerImparesMCC}{61.972}
 \newcommand{\AGMPeso}{177.260{,}33}
-\newcommand{\BFPassadas}{5}
+\newcommand{\BFPassadasUteis}{4}
+\newcommand{\BFPassadasFaixa}{4}
+\newcommand{\PBootLimite}{0{,}002}
+\newcommand{\BFOrigens}{10}
+\newcommand{\TrocasSobreposicaoEsperada}{15{,}6\%}
+\newcommand{\BFTempoPassada}{0{,}281}
+\newcommand{\EstBFHoras}{7{,}8}
+\newcommand{\EstFWAnos}{1{,}0}
+\newcommand{\FWnsOp}{33}
+\newcommand{\EstFWMemGB}{79}
 \newcommand{\TarjanArt}{7.260}
 \newcommand{\TarjanPontes}{34.340}
-\newcommand{\LERformula}{3{,}33}
-\newcommand{\CERformula}{3{,}18\times 10^{-4}}
-\newcommand{\LERsim}{3{,}71}
-\newcommand{\LatapyG}{0{,}0599}
-\newcommand{\LatapyR}{0{,}0288}
-\newcommand{\LatapyRazao}{2{,}1}
-\newcommand{\LBipR}{3{,}75}
-\newcommand{\SigmaBip}{2{,}10}
-\newcommand{\GrauMaxBA}{2.024}
-\newcommand{\BipDescartadas}{139.336}
-\newcommand{\BipDescartadasPct}{8{,}9\%}
-\newcommand{\GammaTodos}{1{,}55}
-\newcommand{\KminTodos}{2}
-\newcommand{\GammaU}{1{,}47}
-\newcommand{\GammaB}{1{,}64}
-\newcommand{\GammaTodosPkg}{1{,}57}
-\newcommand{\RobR}{4.968}
-\newcommand{\RobSAleat}{0{,}9832}
-\newcommand{\RobBAleat}{1.577{,}7}
-\newcommand{\RobCBase}{3{,}807}
-\newcommand{\RobCAleat}{3{,}730}
-\newcommand{\RobSAlvo}{0{,}4341}
-\newcommand{\RobBAlvo}{52.451}
-\newcommand{\RobDAlvo}{54{,}7\%}
-\newcommand{\RobCAlvo}{5{,}935}
-\newcommand{\Hardware}{Intel Core i5-12450H (8 núcleos, 12 threads), 15,7 GB de RAM}
-\newcommand{\SO}{Windows 11 Home 64 bits}
-\newcommand{\PythonVersao}{3.15.2}
-\newcommand{\LinkRepositorio}{https://github.com/USUARIO/tp-grafos-g115}
-\newcommand{\DeclaracaoIA}{PENDENTE -- revisar conforme as regras da disciplina. Sugestão: O código, os experimentos e a redação foram desenvolvidos com auxílio do assistente Claude (Anthropic); o estudante revisou o código, conferiu os resultados e é responsável pelo conteúdo.}
-\newcommand{\EstBFHoras}{5{,}1}
-\newcommand{\EstFWAnos}{1{,}0}
-\newcommand{\EstFWMemGB}{79}
 \newcommand{\TarjanPontesFolha}{34.185}
 \newcommand{\DijkstraMax}{16{,}0}
 \newcommand{\DijkstraMedia}{5{,}51}
 \newcommand{\ExpMin}{1{,}03}
 \newcommand{\ExpMax}{1{,}18}
+\newcommand{\ExpRepMin}{0{,}82}
+\newcommand{\ExpRepMax}{1{,}04}
 \newcommand{\ExpKruskal}{0{,}76}
+\newcommand{\ExpKruskalRep}{1{,}00}
+\newcommand{\KruskalNsMaior}{54}
+\newcommand{\KruskalNsMCC}{29}
 \newcommand{\ExpBF}{1{,}06}
+\newcommand{\ExpBFRep}{1{,}02}
 \newcommand{\ExpBFV}{3{,}03}
 \newcommand{\ExpFW}{1{,}00}
 \newcommand{\TempoBFS}{0{,}137}
 \newcommand{\TempoDijkstra}{0{,}674}
 \newcommand{\RazaoDijkstraBFS}{4{,}9}
-\newcommand{\TempoTotalDesempenho}{13}
-\newcommand{\Descoberta}{A conectividade da rede depende de um núcleo pequeno de vértices. Os 4.968 vértices de maior grau (grau $\ge$ 136; 2.546 usuários e 2.422 cervejas) concentram 70{,}8\% da soma dos graus. Ao removê-los, 51.618 vértices (54{,}7\% dos restantes) ficam isolados, dos quais 38.721 são cervejas: todos os avaliadores dessas cervejas pertencem ao grupo dos usuários mais ativos. Em outras palavras, a maior parte do catálogo só está ligada ao restante da rede por um grupo de cerca de 2.546 usuários muito ativos.}
+\newcommand{\TempoTotalDesempenho}{16}
+\newcommand{\LERformula}{3{,}33}
+\newcommand{\CERformula}{3{,}18\times 10^{-4}}
+\newcommand{\LERsim}{3{,}71}
+\newcommand{\LatapyG}{0{,}0599}
+\newcommand{\LatapyR}{0{,}0306}
+\newcommand{\LatapyRazao}{1{,}96}
+\newcommand{\LBipR}{3{,}672}
+\newcommand{\RazaoL}{1{,}014}
+\newcommand{\SigmaBip}{1{,}93}
+\newcommand{\RTrocas}{10}
+\newcommand{\QTrocas}{10}
+\newcommand{\TrocasAceitasPct}{66{,}3\%}
+\newcommand{\TrocasRestantesPct}{15{,}4\%}
+\newcommand{\LatapyAmostra}{2.000}
+\newcommand{\GrauMaxBA}{2.024}
+\newcommand{\GammaTodos}{1{,}57}
+\newcommand{\KminTodos}{2}
+\newcommand{\KSTodos}{0{,}025}
+\newcommand{\GammaU}{1{,}45}
+\newcommand{\GammaB}{1{,}62}
+\newcommand{\GammaTodosAprox}{1{,}554}
+\newcommand{\GammaTodosExato}{1{,}565}
+\newcommand{\BBoot}{500}
+\newcommand{\PBootMax}{0{,}000}
+\newcommand{\KSSintMax}{0{,}006}
+\newcommand{\RobR}{4.968}
+\newcommand{\RobN}{99.356}
+\newcommand{\RobSAleat}{0{,}9832}
+\newcommand{\RobBAleat}{1.577{,}7}
+\newcommand{\RobDAleat}{1{,}66\%}
+\newcommand{\RobCBase}{3{,}725}
+\newcommand{\RobCAleat}{3{,}724}
+\newcommand{\RobCAleatIC}{[3{,}708; 3{,}739]}
+\newcommand{\RobSAlvo}{0{,}4341}
+\newcommand{\RobBAlvo}{52.451}
+\newcommand{\RobDAlvo}{54{,}7\%}
+\newcommand{\RobCAlvo}{6{,}011}
+\newcommand{\RobCAlvoIC}{[5{,}984; 6{,}038]}
+\newcommand{\RobKAlvo}{2.000}
+\newcommand{\RobGrauCorte}{136}
+\newcommand{\RobEmpatesRem}{20}
+\newcommand{\RobEmpatesTot}{33}
+\newcommand{\Hardware}{Intel Core i5-12450H (8 núcleos, 12 threads), 15,7 GB de RAM}
+\newcommand{\SO}{Windows 11 Home 64 bits}
+\newcommand{\PythonVersao}{3.15.2}
+\newcommand{\LinkRepositorio}{https://github.com/USUARIO/tp-grafos-g115}
+\newcommand{\DeclaracaoIA}{Este trabalho foi desenvolvido com uso intensivo do assistente de programação Claude Code (Anthropic, modelo Claude Opus 5.5). A partir das instruções do autor, o assistente escreveu o código, executou os experimentos, gerou as figuras e redigiu o texto. O autor definiu os requisitos e as restrições do trabalho e escolheu, entre as alternativas apresentadas, a modelagem bipartida usuário--cerveja. Todos os números do texto são gerados automaticamente a partir dos arquivos de resultados do repositório. O autor é responsável pelo conteúdo entregue.}
+\newcommand{\Descoberta}{A conectividade da rede depende de um núcleo pequeno de vértices. Os 4.968 vértices de maior grau (grau $\ge$ 136; 2.546 usuários e 2.422 cervejas) concentram 70{,}8\% da soma dos graus da MCC. Ao removê-los, 51.618 vértices (54{,}7\% dos restantes) ficam isolados, dos quais 38.721 são cervejas: todos os avaliadores dessas cervejas estão entre os 2.546 usuários removidos. Ou seja, a maior parte do catálogo só se liga ao restante da rede por meio de um grupo pequeno de usuários muito ativos.}

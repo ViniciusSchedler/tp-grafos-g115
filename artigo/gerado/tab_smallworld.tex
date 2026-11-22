@@ -1,19 +1,21 @@
 \begin{table}[t]
-\caption{Small-world: grafo real (MCC, $L$ exato) e modelos com o mesmo $n$ ($L$ estimado com 200 origens; meia-largura do IC 95\% $\le 0{,}05$).}
+\caption{Small-world. $L$: grafo real exato (MCC); modelos clássicos estimados com 200 origens de BFS; nulo bipartido: média de 10 instâncias (100 origens cada). $cc_\bullet$: agrupamento bipartido médio em 2.000 vértices sorteados. Entre colchetes, IC de 95\%.}
 \label{tab:sw}
-\small
-\begin{tabular}{lrrr}
+\footnotesize
+\begin{tabular}{@{}lllr@{}}
 \toprule
 Grafo & $L$ & $C$ & grau máx. \\
 \midrule
 BeerAdvocate & 3{,}725 & 0{,}0 & 5.782 \\
-ER (aproximação) & 3{,}332 & $3{,}18\times 10^{-4}$ & -- \\
+ER (fórmula) & 3{,}332 & $3{,}18\times 10^{-4}$ & -- \\
 Erd\H{o}s--Rényi & 3{,}708 & 0{,}0003 & 57 \\
 Barabási--Albert ($m_0$=16) & 3{,}261 & 0{,}0025 & 2.024 \\
-Watts--Strogatz (k=32, p=0.1) & 4{,}646 & 0{,}5305 & 41 \\
-Bipartido aleat. & 3{,}747 & 0{,}0000 & 3.449 \\
+Watts--Strogatz ($k$=32, $p$=0,1) & 4{,}643 & 0{,}5306 & 41 \\
+Nulo bipartido (trocas) & 3{,}672 & 0 & 5.782 \\
 \midrule
-\multicolumn{4}{l}{$cc_\bullet$ (Latapy): grafo 0{,}0599 $\pm$ 0{,}0032; bip. aleat. 0{,}0288 $\pm$ 0{,}0008} \\
+\multicolumn{4}{@{}l@{}}{$cc_\bullet$ BeerAdvocate: 0{,}0599 [0{,}0567; 0{,}0632]} \\
+\multicolumn{4}{@{}l@{}}{$cc_\bullet$ nulo bipartido: 0{,}0306 [0{,}0304; 0{,}0307]} \\
+\multicolumn{4}{@{}l@{}}{$L$ do nulo bipartido: IC [3{,}650; 3{,}693]; $\sigma_{\text{bip}} = 1{,}93$} \\
 \bottomrule
 \end{tabular}
 \end{table}

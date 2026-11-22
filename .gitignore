@@ -11,3 +11,7 @@ artigo/*.blg
 artigo/*.fls
 artigo/*.fdb_latexmk
 artigo/*.synctex.gz
+# trava temporaria de parte3_analise.py
+results/*.lock
+# zip do template baixado do Overleaf (o webmedia.cls ja esta em artigo/)
+artigo/WebMedia_Template.zip

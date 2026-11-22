@@ -1,0 +1,76 @@
+B Tarjan-CFC.. k=6250 62s
+B Tarjan-CFC.. k=12500 88s
+B Tarjan-CFC.. k=25000 128s
+B Tarjan-CFC.. k=50000 184s
+{
+  "BFS": {
+    "inclinacao_vs_custo_teorico": 1.179825247787886,
+    "inclinacao_vs_V": 0.8833695697013147,
+    "inclinacao_por_repeticao": 0.8997124275028197,
+    "pontos": 5,
+    "repeticoes": 120
+  },
+  "DFS": {
+    "inclinacao_vs_custo_teorico": 1.064746650827173,
+    "inclinacao_vs_V": 0.7936937803775862,
+    "inclinacao_por_repeticao": 0.9684576904677427,
+    "pontos": 5,
+    "repeticoes": 120
+  },
+  "Euler": {
+    "inclinacao_vs_custo_teorico": 1.1277673080447437,
+    "inclinacao_vs_V": 0.8483078062734201,
+    "inclinacao_por_repeticao": 0.8155499095353798,
+    "pontos": 5,
+    "repeticoes": 120
+  },
+  "Tarjan": {
+    "inclinacao_vs_custo_teorico": 1.0928927439384342,
+    "inclinacao_vs_V": 0.8105343777137229,
+    "inclinacao_por_repeticao": 1.0037887749709484,
+    "pontos": 5,
+    "repeticoes": 120
+  },
+  "Tarjan-CFC": {
+    "inclinacao_vs_custo_teorico": 1.1535020938194478,
+    "inclinacao_vs_V": 0.8579873230809972,
+    "inclinacao_por_repeticao": 1.0389100690784843,
+    "pontos": 5,
+    "repeticoes": 120
+  },
+  "Dijkstra": {
+    "inclinacao_vs_custo_teorico": 1.0327886078110469,
+    "inclinacao_vs_V": 0.8756119684144418,
+    "inclinacao_por_repeticao": 0.8826569373818832,
+    "pontos": 5,
+    "repeticoes": 120
+  },
+  "Prim": {
+    "inclinacao_vs_custo_teorico": 1.058072211213322,
+    "inclinacao_vs_V": 0.8907046724627683,
+    "inclinacao_por_repeticao": 0.8202553281648535,
+    "pontos": 5,
+    "repeticoes": 120
+  },
+  "Kruskal": {
+    "inclinacao_vs_custo_teorico": 0.7636057697137483,
+    "inclinacao_vs_V": 0.6054936311286089,
+    "inclinacao_por_repeticao": 0.9987099766975004,
+    "pontos": 5,
+    "repeticoes": 120
+  },
+  "Bellman-Ford": {
+    "inclinacao_vs_custo_teorico": 1.0561408025488543,
+    "inclinacao_vs_V": 3.0314402180874986,
+    "inclinacao_por_repeticao": 1.0164994263907683,
+    "pontos": 4,
+    "repeticoes": 40
+  },
+  "Floyd-Warshall": {
+    "inclinacao_vs_custo_teorico": 0.9983342530016514,
+    "inclinacao_vs_V": 2.995002759004955,
+    "inclinacao_por_repeticao": 0.99928426065396,
+    "pontos": 4,
+    "repeticoes": 40
+  }
+}
