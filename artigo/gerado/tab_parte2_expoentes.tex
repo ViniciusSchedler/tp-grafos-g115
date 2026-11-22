@@ -1,0 +1,20 @@
+\begin{table}[t]
+\caption{Inclinação de $\log(\text{tempo})$ contra $\log f(V,E)$ (custo teórico; esperado $\approx 1$) e contra $\log V$, no experimento B.}
+\label{tab:p2exp}
+\small
+\begin{tabular}{llrr}
+\toprule
+Algoritmo & $f(V,E)$ & vs.\ $f$ & vs.\ $V$ \\
+\midrule
+BFS & $V+E$ & 1{,}18 & 0{,}88 \\
+DFS & $V+E$ & 1{,}06 & 0{,}79 \\
+Euler & $V+E$ & 1{,}13 & 0{,}85 \\
+Tarjan & $V+E$ & 1{,}09 & 0{,}81 \\
+Dijkstra & $(V+E)\log V$ & 1{,}03 & 0{,}88 \\
+Prim & $E\log V$ & 1{,}06 & 0{,}89 \\
+Kruskal & $E\log V$ & 0{,}76 & 0{,}61 \\
+Bellman-Ford & $VE$ & 1{,}06 & 3{,}03 \\
+Floyd-Warshall & $V^3$ & 1{,}00 & 3{,}00 \\
+\bottomrule
+\end{tabular}
+\end{table}

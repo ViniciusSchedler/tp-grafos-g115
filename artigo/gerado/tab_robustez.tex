@@ -1,0 +1,17 @@
+\begin{table}[t]
+\caption{Robustez na MCC ($n=99.356$, $r=4.968$): remoção aleatória ($T=30$, média $\pm$ DP) e remoção dos $r$ vértices de maior grau. As métricas C são estimadas com BFS a partir de 100 origens.}
+\label{tab:rob}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Métrica & Sem remoção & Aleatória & Por grau \\
+\midrule
+A: maior componente & 99.356 & 92.804 $\pm$ 339 & 40.975 \\
+A: $S$ & 1{,}0000 & 0{,}9832 $\pm$ 0{,}0036 & 0{,}4341 \\
+B: componentes & 1{,}0 & 1.577{,}7 $\pm$ 337{,}8 & 52.451{,}0 \\
+C: distância média & 3{,}807 & 3{,}730 $\pm$ 0{,}034 & 5{,}935 \\
+C: maior dist. observada & 7{,}0 & 7{,}9 $\pm$ 0{,}4 & 14{,}0 \\
+D: fração isolados & 0{,}0000 & 0{,}0166 $\pm$ 0{,}0036 & 0{,}5469 \\
+\bottomrule
+\end{tabular}
+\end{table}

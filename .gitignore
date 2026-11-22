@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+# dado bruto (445 MB): baixar do SNAP, ver README
+data/raw/Beeradvocate.txt.gz
+# arquivos auxiliares do LaTeX
+artigo/*.aux
+artigo/*.log
+artigo/*.out
+artigo/*.bbl
+artigo/*.blg
+artigo/*.fls
+artigo/*.fdb_latexmk
+artigo/*.synctex.gz

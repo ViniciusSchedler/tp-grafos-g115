@@ -1,0 +1,20 @@
+\begin{table}[t]
+\caption{Parte II: resultado de cada algoritmo na MCC ($|V|=99.356$, $|E|=1.571.439$).}
+\label{tab:p2res}
+\small
+\begin{tabular}{lp{5.4cm}}
+\toprule
+Algoritmo & Resultado \\
+\midrule
+BFS & origem sorteada: excentricidade 6 \\
+DFS & 42 árvores no grafo completo \\
+Eulerianidade & não; 62.054 vértices de grau ímpar \\
+Dijkstra & mesma origem: dist. máx. 16{,}00, média 5{,}51 \\
+Bellman-Ford & sem ciclo negativo; igual a Dijkstra; 5 passadas \\
+Floyd-Warshall & só em amostras ($\le 400$ vértices) \\
+Tarjan & 7.260 articulações; 34.340 pontes \\
+Prim & AGM: 99.355 arestas, peso 177.260{,}33 \\
+Kruskal & AGM: 99.355 arestas, peso 177.260{,}33 \\
+\bottomrule
+\end{tabular}
+\end{table}

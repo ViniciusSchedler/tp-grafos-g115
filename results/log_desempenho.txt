@@ -1,0 +1,102 @@
+{
+  "V_mcc": 99356,
+  "E_mcc": 1571439,
+  "bfs_origem": 73105,
+  "bfs_excentricidade_origem": 6,
+  "dfs_arvores_no_grafo_completo": 42,
+  "euler_grafo_completo": {
+    "vertices_grau_impar": 62054,
+    "conexo_ignorando_isolados": false,
+    "circuito_euleriano": false,
+    "caminho_euleriano": false
+  },
+  "euler_mcc": {
+    "vertices_grau_impar": 61972,
+    "conexo_ignorando_isolados": true,
+    "circuito_euleriano": false,
+    "caminho_euleriano": false
+  },
+  "dijkstra_origem": 73105,
+  "dijkstra_dist_max": 16.0,
+  "dijkstra_dist_media": 5.507292875044034,
+  "bellman_ford_sem_ciclo_negativo": true,
+  "bellman_ford_igual_dijkstra": true,
+  "bellman_ford_passadas_ate_estabilizar": 5,
+  "tarjan_articulacoes": 7260,
+  "tarjan_pontes": 34340,
+  "tarjan_pontes_com_folha": 34185,
+  "agm_peso_prim": 177260.3334,
+  "agm_peso_kruskal": 177260.3334,
+  "agm_arestas": [
+    99355,
+    99355
+  ]
+}
+A BFS 18s
+A DFS 41s
+A Euler 52s
+A Tarjan 82s
+A Dijkstra 110s
+A Prim 139s
+A Kruskal 178s
+A Bellman-Ford 202s
+B BFS.. k=6250 277s
+B BFS.. k=12500 375s
+B BFS.. k=25000 519s
+B BFS.. k=50000 706s
+B Bellman-Ford.. k=125 709s
+B Bellman-Ford.. k=250 711s
+B Bellman-Ford.. k=500 715s
+B Bellman-Ford.. k=1000 729s
+B Floyd-Warshall.. k=50 731s
+B Floyd-Warshall.. k=100 734s
+B Floyd-Warshall.. k=200 739s
+B Floyd-Warshall.. k=400 763s
+{
+  "BFS": {
+    "inclinacao_vs_custo_teorico": 1.179825247787886,
+    "inclinacao_vs_V": 0.8833695697013147,
+    "pontos": 5
+  },
+  "DFS": {
+    "inclinacao_vs_custo_teorico": 1.064746650827173,
+    "inclinacao_vs_V": 0.7936937803775862,
+    "pontos": 5
+  },
+  "Euler": {
+    "inclinacao_vs_custo_teorico": 1.1277673080447437,
+    "inclinacao_vs_V": 0.8483078062734201,
+    "pontos": 5
+  },
+  "Tarjan": {
+    "inclinacao_vs_custo_teorico": 1.0928927439384342,
+    "inclinacao_vs_V": 0.8105343777137229,
+    "pontos": 5
+  },
+  "Dijkstra": {
+    "inclinacao_vs_custo_teorico": 1.0327886078110469,
+    "inclinacao_vs_V": 0.8756119684144418,
+    "pontos": 5
+  },
+  "Prim": {
+    "inclinacao_vs_custo_teorico": 1.058072211213322,
+    "inclinacao_vs_V": 0.8907046724627683,
+    "pontos": 5
+  },
+  "Kruskal": {
+    "inclinacao_vs_custo_teorico": 0.7636057697137483,
+    "inclinacao_vs_V": 0.6054936311286089,
+    "pontos": 5
+  },
+  "Bellman-Ford": {
+    "inclinacao_vs_custo_teorico": 1.0561408025488543,
+    "inclinacao_vs_V": 3.0314402180874986,
+    "pontos": 4
+  },
+  "Floyd-Warshall": {
+    "inclinacao_vs_custo_teorico": 0.9983342530016514,
+    "inclinacao_vs_V": 2.995002759004955,
+    "pontos": 4
+  }
+}
+total 764s

@@ -1,0 +1,20 @@
+\begin{table}[t]
+\caption{Tempo real na MCC: média, desvio padrão e IC de 95\% (Z para $R=30$; t-Student para $R=10$).}
+\label{tab:p2tempo}
+\small
+\begin{tabular}{lrrrc}
+\toprule
+Algoritmo & $R$ & Média (s) & DP (s) & IC 95\% (s) \\
+\midrule
+BFS & 30 & 0{,}137 & 0{,}023 & [0{,}129; 0{,}145] (Z) \\
+DFS & 30 & 0{,}497 & 0{,}059 & [0{,}476; 0{,}518] (Z) \\
+Euler & 30 & 0{,}137 & 0{,}016 & [0{,}131; 0{,}143] (Z) \\
+Tarjan & 30 & 0{,}766 & 0{,}047 & [0{,}749; 0{,}783] (Z) \\
+Dijkstra & 30 & 0{,}674 & 0{,}032 & [0{,}663; 0{,}686] (Z) \\
+Prim & 30 & 0{,}717 & 0{,}035 & [0{,}705; 0{,}730] (Z) \\
+Kruskal & 30 & 0{,}753 & 0{,}059 & [0{,}732; 0{,}775] (Z) \\
+Bellman-Ford$^{*}$ & 10 & 1{,}506 & 0{,}042 & [1{,}476; 1{,}536] (t) \\
+\bottomrule
+\multicolumn{5}{l}{\footnotesize $^{*}$ com parada antecipada.}
+\end{tabular}
+\end{table}

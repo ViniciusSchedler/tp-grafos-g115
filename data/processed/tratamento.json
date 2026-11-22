@@ -1,0 +1,25 @@
+{
+  "avaliacoes_lidas": 1586614,
+  "avaliacoes_sem_profileName_descartadas": 348,
+  "avaliacoes_sem_nota_descartadas": 0,
+  "avaliacoes_usadas": 1586266,
+  "usuarios": 33387,
+  "cervejas": 66051,
+  "arestas_grafo_simples": 1571480,
+  "pares_usuario_cerveja_repetidos": 14274,
+  "avaliacoes_removidas_na_fusao_de_paralelas": 14786,
+  "review_time_min_unix": 840672001,
+  "review_time_max_unix": 1326285348,
+  "histograma_review_overall": {
+    "0.0": 7,
+    "1.0": 10954,
+    "1.5": 12973,
+    "2.0": 38207,
+    "2.5": 58486,
+    "3.0": 165583,
+    "3.5": 301750,
+    "4.0": 582684,
+    "4.5": 324323,
+    "5.0": 91299
+  }
+}

@@ -1,0 +1,493 @@
+\documentclass[sigconf]{webmedia}
+%webmeda.cls is adapted from acmart.cls for use in Proceedings of the Brazilian Symposium on Multimedia and the Web (WebMedia)
+
+% \usepackage{lmodern} (presente no template) foi removido: com o acmart/newtxmath ele
+% faz desaparecer simbolos matematicos ( ) + = no PDF.
+\usepackage[brazil]{babel}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+\settopmatter{printacmref=false, printfolios=true}
+\setcopyright{none}
+\setevent{webmedia}
+\proceedingsDetails[WebMedia’2026]{Proceedings of the Brazilian Symposium on Multimedia and the Web}{2026}{Lavras/MG, Brazil}
+\ISSN{2966-2753}
+
+% todos os numeros do texto sao gerados por src/gerar_latex.py a partir de results/
+\input{gerado/numeros}
+
+\begin{document}
+
+\title{Análise Estrutural e Algorítmica do Grafo Bipartido Usuário--Cerveja do BeerAdvocate}
+\subtitle{Trabalho Prático de MATA53 -- Teoria dos Grafos (UFBA) -- Grafo G115}
+
+\author{Vinicius Schedler}
+\affiliation{%
+  \institution{Universidade Federal da Bahia, Instituto de Computação}
+  \city{Salvador}
+  \state{BA}
+  \country{Brasil}}
+\email{Matrícula 223115843}
+
+\renewcommand{\shortauthors}{V. Schedler}
+
+\begin{abstract}
+Este trabalho analisa o conjunto de dados \textit{web-BeerAdvocate} do SNAP, atribuído
+pela regra de mapeamento da matrícula (grafo G115). Como o conjunto é formado por
+avaliações e não por uma lista de arestas, modelamos um grafo bipartido não direcionado
+usuário--cerveja com \NVertices{} vértices e \NArestas{} arestas. Calculamos as medidas
+estruturais pedidas (graus, densidade, componentes, diâmetro, raio, comprimento médio
+dos caminhos, clusterização e triângulos), implementamos em Python os algoritmos da
+disciplina (BFS, DFS, eulerianidade, Dijkstra, Bellman-Ford, Floyd-Warshall, Tarjan,
+Prim e Kruskal), validamos cada um contra o NetworkX e medimos seus tempos de execução
+com intervalos de confiança. Na Parte III investigamos as propriedades \textit{small-world},
+lei de potência e robustez. O grafo tem distâncias curtas (comprimento médio \LExato{} e
+diâmetro \Diametro{}), mas, por ser bipartido, não possui triângulos; o critério clássico
+de \textit{small-world} baseado em clusterização não se aplica. A distribuição de graus tem
+cauda pesada, porém é mais bem descrita por uma lei de potência truncada do que por uma
+lei de potência pura. A rede é robusta à remoção aleatória de 5\% dos vértices e bem mais
+sensível à remoção dos 5\% de maior grau.
+\end{abstract}
+
+\keywords{teoria dos grafos, grafos bipartidos, SNAP, small-world, lei de potência, robustez}
+
+\maketitle
+
+% ======================================================================
+\section{Introdução}
+
+O objetivo do trabalho é aplicar os conceitos de MATA53 a um grafo real: tratar os dados,
+calcular propriedades estruturais, implementar os algoritmos estudados e interpretar os
+resultados. O grafo foi determinado pela regra
+$f(M) = (\text{soma dos dígitos de } M)\times(\text{últimos 2 dígitos de } M + 1) \bmod 129$.
+Para $M = 223115843$, a soma dos dígitos é $2+2+3+1+1+5+8+4+3 = 29$ e os dois últimos
+dígitos são $43$; logo $f(M) = 29 \times 44 \bmod 129 = 1276 \bmod 129 = 115$, isto é,
+o grafo G115, que na planilha da disciplina corresponde ao conjunto \textit{web-BeerAdvocate}
+do SNAP~\cite{snap,mcauley2012,mcauley2013}.
+
+O restante do texto está organizado assim: a Seção~\ref{sec:dados} descreve o conjunto
+original e o tratamento realizado; a Seção~\ref{sec:metodologia} apresenta a metodologia;
+a Seção~\ref{sec:resultados} reúne os resultados das Partes I, II e III; a
+Seção~\ref{sec:discussao} discute limitações; e a Seção~\ref{sec:conclusao} conclui.
+
+% ======================================================================
+\section{Grafo original e tratamento}\label{sec:dados}
+
+\subsection{Conjunto de dados}
+O \textit{web-BeerAdvocate} reúne avaliações de cervejas publicadas no site BeerAdvocate.
+Cada registro contém identificadores da cerveja e da cervejaria, estilo, teor alcoólico,
+cinco notas (aparência, aroma, paladar, sabor e nota geral \texttt{overall}), o instante
+da avaliação (\textit{unix time}), o nome de perfil do usuário e o texto da
+avaliação~\cite{mcauley2012}. Registramos três divergências entre o enunciado, a página do
+SNAP e o arquivo obtido:
+\begin{enumerate}
+  \item O conjunto \textbf{não é uma lista de arestas}: o grafo precisa ser construído a
+  partir das avaliações (Seção~\ref{sec:modelagem}).
+  \item A página do SNAP informa que, a pedido do BeerAdvocate, os dados não estão mais
+  disponíveis; mesmo assim, o arquivo \texttt{Beeradvocate.txt.gz} ainda era servido pelo
+  SNAP e foi baixado em \DataDownload{} (\NBytesBruto{} bytes, SHA-256 registrado no
+  repositório). Por isso o repositório não redistribui o arquivo bruto nem os nomes de
+  usuário; publica apenas a lista de arestas tratada, com identificadores numéricos.
+  \item O arquivo contém \NAvLidas{} avaliações, enquanto a página do SNAP informa
+  1.586.259; o número de usuários (\NUsuarios{}) e de cervejas (\NCervejas{}) coincide com
+  a página. A avaliação mais antiga é de \DataMin{}, anterior ao início indicado na página
+  (jan./1998).
+\end{enumerate}
+
+\subsection{Modelagem e tratamento}\label{sec:modelagem}
+Modelamos um \textbf{grafo bipartido não direcionado} $G=(U\cup B, E)$, em que $U$ é o
+conjunto de usuários (\texttt{review/profileName}), $B$ o conjunto de cervejas
+(\texttt{beer/beerId}) e $\{u,b\}\in E$ se o usuário $u$ avaliou a cerveja $b$. Essa é a
+estrutura presente nos dados; projeções usuário--usuário ou cerveja--cerveja exigiriam
+escolher um limiar arbitrário de itens em comum e gerariam grafos muito mais densos. A
+Tabela~\ref{tab:tratamento} resume o tratamento.
+
+\begin{table}[t]
+\caption{Tratamento aplicado aos dados (script \texttt{preparar\_dados.py}).}
+\label{tab:tratamento}
+\small
+\begin{tabular}{p{5.6cm}r}
+\toprule
+Etapa & Quantidade \\
+\midrule
+Avaliações lidas & \NAvLidas \\
+Descartadas sem \texttt{profileName} & \NAvSemUsuario \\
+Pares usuário--cerveja repetidos (multiarestas) & \NParesRepetidos \\
+Avaliações fundidas ao tornar o grafo simples & \NAvFundidas \\
+Arestas do grafo simples & \NArestas \\
+Usuários $|U|$ / cervejas $|B|$ & \NUsuarios{} / \NCervejas \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+As decisões foram: (i) descartar avaliações sem nome de usuário, pois não há como
+identificar o vértice; (ii) converter o multigrafo em grafo simples, mantendo uma aresta
+por par e a média das notas \texttt{overall} do par; (iii) usar todo o período (grafo
+estático como união das arestas no tempo); (iv) não há laços, pois toda aresta liga um
+usuário a uma cerveja; (v) para os algoritmos ponderados, atribuir a cada aresta o peso
+$w(u,b) = 6 - \bar{o}(u,b) \in [1,6]$, em que $\bar{o}$ é a nota média do par. O peso é
+positivo (requisito de Dijkstra) e torna ``mais curta'' uma aresta bem avaliada; a escolha
+é uma convenção nossa, pois os dados não trazem distâncias.
+
+% ======================================================================
+\section{Metodologia}\label{sec:metodologia}
+
+\subsection{Representação e implementação}
+Usamos listas de adjacência, forma indicada nos slides para grafos esparsos
+($|E| \ll |V|^2$); a matriz de adjacência teria $|V|^2 \approx 10^{10}$ posições. Os
+algoritmos foram escritos em Python puro seguindo os pseudocódigos das aulas
+(Tabela~\ref{tab:algoritmos}), com a mesma notação ($d[v]$, $f[v]$, $\pi[v]$, cores,
+$key[v]$, \textsc{Relaxa}). DFS e Tarjan usam pilha explícita, pois a recursão do Python
+não suporta $\sim\!10^5$ níveis; a ordem de visita é a mesma da versão recursiva. Como o
+\texttt{heapq} não oferece \textsc{DiminuirChave}, Dijkstra e Prim reinserem o vértice
+no heap e descartam entradas obsoletas, o que mantém a complexidade
+$O((V+E)\log V)$.
+
+O enunciado pede o ``algoritmo de Tarjan''. Os slides tratam componentes fortemente
+conexas pela DFS no grafo e no transposto~\cite{cormen2009}; em um grafo não direcionado,
+porém, as componentes fortemente conexas coincidem com as componentes conexas. Aplicamos,
+então, o algoritmo de Tarjan para \textbf{pontos de articulação e pontes}~\cite{tarjan1972,hopcroft1973},
+que usa a mesma DFS e o valor $low[v]$. A AGM de Kruskal usa \textit{union-find} com
+compressão de caminho e união por posto~\cite{cormen2009}.
+
+\begin{table}[t]
+\caption{Algoritmos implementados e complexidade teórica (listas de adjacência).}
+\label{tab:algoritmos}
+\small
+\begin{tabular}{lll}
+\toprule
+Algoritmo & Complexidade & Aplicado a \\
+\midrule
+BFS & $O(V+E)$ & MCC, amostras \\
+DFS & $O(V+E)$ & MCC, amostras \\
+Eulerianidade & $O(V+E)$ & grafo, MCC \\
+Tarjan (art.\ e pontes) & $O(V+E)$ & MCC, amostras \\
+Dijkstra (heap) & $O((V+E)\log V)$ & MCC, amostras \\
+Prim (heap) & $O(E\log V)$ & MCC, amostras \\
+Kruskal (\textit{union-find}) & $O(E\log V)$ & MCC, amostras \\
+Bellman-Ford & $O(VE)$ & amostras; MCC$^{*}$ \\
+Floyd-Warshall & $O(V^3)$ & amostras \\
+\bottomrule
+\multicolumn{3}{l}{\footnotesize $^{*}$ com parada antecipada; amostras de Floyd-Warshall: $\le 400$ vértices.}\\
+\end{tabular}
+\end{table}
+
+\subsection{Validação}
+Cada algoritmo foi testado (\texttt{tests/test\_algoritmos.py}) em grafos pequenos com
+resposta conhecida: a AGM de peso 37 do exemplo de Cormen et al.~\cite{cormen2009}
+apresentado nos slides, a matriz final do exemplo de Floyd-Warshall dos slides, um ciclo
+negativo para Bellman-Ford, as pontes de Königsberg (nenhum vértice de grau par, logo sem
+circuito nem caminho euleriano) e dois triângulos ligados por uma ponte para Tarjan. Em
+seguida, comparamos os resultados com o NetworkX~\cite{hagberg2008} em 20 grafos aleatórios
+com sementes fixas (distâncias, número de árvores da DFS, articulações, pontes, peso da
+AGM e eulerianidade). As métricas da Parte I (diâmetro, raio, triângulos, clusterização,
+bipartição) também foram comparadas com o NetworkX. Todos os testes passaram.
+
+\subsection{Medidas estruturais}
+Adotamos as definições usuais~\cite{newman2010}: densidade $\rho = 2|E|/(|V|(|V|-1))$;
+excentricidade $e(v)=\max_u d(v,u)$, diâmetro $\max_v e(v)$ e raio $\min_v e(v)$;
+comprimento médio dos caminhos $L = \frac{1}{n(n-1)}\sum_{u\ne v} d(u,v)$; coeficiente de
+clusterização local $C_v = 2T_v/(k_v(k_v-1))$, com $T_v$ o número de arestas entre vizinhos
+de $v$ ($C_v=0$ se $k_v<2$), e $C$ a média de $C_v$. Como o grafo é desconexo, distâncias,
+diâmetro e raio foram calculados na \textbf{maior componente conexa} (MCC). O comprimento
+médio é \textbf{exato}: executamos uma BFS a partir de cada um dos \MCCVertices{} vértices da
+MCC (\TempoDistHoras{} h com 8 processos). O diâmetro e o raio exatos foram obtidos de duas
+formas: pelo método de limitantes de excentricidade de Takes e Kosters~\cite{takes2011}
+(\BFSLimitantes{} BFS) e pela excentricidade de todos os vértices; os dois métodos
+concordam.
+
+\subsection{Experimentos de desempenho}
+Medimos o tempo de parede com \texttt{time.perf\_counter}, excluindo leitura e preparação
+da entrada e desligando o coletor de lixo durante a medição. Foram dois experimentos:
+\textbf{(A)} cada algoritmo viável executado na MCC inteira; \textbf{(B)} escalabilidade
+em subgrafos conexos de tamanho crescente, formados pelos $k$ primeiros vértices de uma BFS
+a partir de um vértice sorteado (uma amostra nova por repetição). Os algoritmos quase
+lineares usam $R=30$ repetições e $k \in \{6250, 12500, 25000, 50000\}$; Bellman-Ford usa
+$R=10$ e $k\in\{125,\dots,1000\}$; Floyd-Warshall usa $R=10$ e $k\in\{50,\dots,400\}$.
+Reportamos média, desvio padrão amostral $s$ e intervalo de confiança de 95\%:
+$\bar{x} \pm z_{\alpha/2}\, s/\sqrt{n}$ quando $n\ge 30$ e
+$\bar{x} \pm t_{\alpha/2,\,n-1}\, s/\sqrt{n}$ quando $n<30$, como pede o enunciado. Para
+comparar o crescimento observado com o teórico, ajustamos por mínimos quadrados a
+inclinação de $\log(\text{tempo})$ contra $\log f(V,E)$, em que $f$ é o custo teórico;
+inclinação próxima de 1 indica concordância. As sementes aleatórias são fixas (2025 e
+derivadas). Ambiente: \Hardware{}; \SO{}; Python \PythonVersao{}, NetworkX 3.7, SciPy 1.18.1.
+
+\subsection{Parte III}
+\textbf{Small-world.} Seguimos o Apêndice A do enunciado e a formulação de Watts e
+Strogatz~\cite{watts1998}: comparamos $L$ e $C$ com os de um grafo aleatório
+Erd\H{o}s--Rényi $G(n,m)$~\cite{erdos1959} de mesmo $n$ e mesmo grau médio, tanto pelas
+aproximações $L_{\text{ER}}\approx \ln n/\ln\langle k\rangle$ e
+$C_{\text{ER}}\approx \langle k\rangle/n$ quanto por uma instância gerada. Como um grafo
+bipartido não tem triângulos, acrescentamos o coeficiente de agrupamento bipartido de
+Latapy et al.~\cite{latapy2008},
+$cc_\bullet(u)=\text{média}_{v\in N(N(u))\setminus\{u\}}\,|N(u)\cap N(v)|/|N(u)\cup N(v)|$,
+comparado com um grafo bipartido aleatório com as mesmas sequências de graus (modelo de
+configuração~\cite{newman2001}). Todo o cálculo foi implementado sem bibliotecas de
+\textit{small-world}; $L$ dos grafos sintéticos foi estimado com BFS a partir de 200 origens.
+
+\textbf{Lei de potência.} Seguindo o Apêndice B, construímos a distribuição de graus e a
+CCDF em escala log-log. Estimamos $\gamma$ por máxima verossimilhança discreta
+aproximada~\cite{clauset2009}, $\hat\gamma = 1 + n\left[\sum_i \ln\frac{k_i}{k_{\min}-1/2}\right]^{-1}$,
+escolhendo $k_{\min}$ pela menor distância de Kolmogorov--Smirnov. O pacote
+\texttt{powerlaw}~\cite{alstott2014} foi usado para conferir $\hat\gamma$ e para os testes
+de razão de verossimilhança contra distribuições alternativas.
+
+\textbf{Robustez.} Seguindo o Apêndice C, trabalhamos na MCC ($n=\MCCVertices$) e removemos
+$r=\lceil 0{,}05\,n\rceil=\RobR{}$ vértices: (a) uniformemente ao acaso, com $T=30$ repetições;
+(b) os $r$ de maior grau (ranking fixo calculado antes da remoção), pois o grau é uma das
+centralidades recomendadas e a intermediação exata custaria $O(VE)$. Após cada remoção
+medimos: A -- tamanho da maior componente e $S$ = fração dos vértices restantes que ela
+contém; B -- número de componentes; C -- distância média na maior componente (estimada
+com BFS a partir de 100 origens); D -- fração de vértices isolados.
+
+% ======================================================================
+\section{Resultados}\label{sec:resultados}
+
+\subsection{Parte I -- Análise estrutural}
+
+A Tabela~\ref{tab:parte1} lista todas as medidas pedidas, indicando como cada uma foi obtida.
+
+\input{gerado/tab_parte1}
+
+\textbf{Graus.} Os graus vão de 1 a \GrauMax{} (o vértice de maior grau é um usuário),
+com média \GrauMedio{}. Usuários têm grau médio \GrauMedioU{} (máximo \GrauMaxU{}) e cervejas
+\GrauMedioB{} (máximo \GrauMaxB{}). A Figura~\ref{fig:graus} mostra que
+\FracGrauUm{} dos vértices têm grau 1, enquanto poucos vértices têm milhares de arestas:
+a distribuição é muito assimétrica.
+
+\begin{figure}[t]
+\includegraphics[width=\linewidth]{../results/figures/distribuicao_graus.pdf}
+\caption{Distribuição de graus $P(k)$ e CCDF $P(K\ge k)$ em escala log-log, para todos os
+vértices e separadamente para usuários e cervejas.}
+\label{fig:graus}
+\end{figure}
+
+\textbf{Densidade e componentes.} A densidade é $\rho=\Densidade$; mesmo relativa ao
+máximo possível em um grafo bipartido ($|U||B|$ arestas), ela vale apenas $\DensidadeBip$.
+O grafo tem \NComponentes{} componentes: uma componente gigante com \MCCVertices{} vértices
+(\MCCPercent{} do total) e \NCompPequenas{} componentes de tamanho 2, cada uma formada por
+um usuário que avaliou uma única cerveja que ninguém mais avaliou.
+
+\textbf{Distâncias.} Na MCC, o diâmetro é \Diametro{}, o raio é \Raio{} e o comprimento
+médio exato dos caminhos é \LExato{}. Como o grafo é bipartido, distâncias entre usuário e
+cerveja são ímpares e distâncias entre vértices do mesmo lado são pares; a
+Figura~\ref{fig:dist} mostra que \FracDistAteQuatro{} dos pares ordenados estão a no máximo
+4 passos.
+
+\begin{figure}[t]
+\includegraphics[width=.85\linewidth]{../results/figures/distribuicao_distancias.pdf}
+\caption{Distribuição exata das distâncias entre pares de vértices da MCC.}
+\label{fig:dist}
+\end{figure}
+
+\textbf{Triângulos e clusterização.} A contagem exata dá \Triangulos{} triângulos e
+coeficiente de clusterização médio $C=\Clusterizacao$. Isso decorre da estrutura: verificamos
+por BFS (2-coloração) que o grafo é bipartido e, como grafos bipartidos não têm ciclos
+ímpares, não existem triângulos. O cálculo serve como conferência da implementação, não
+como achado.
+
+\textbf{Visualização.} A Figura~\ref{fig:viz} mostra um subgrafo de \VizVertices{} vértices
+obtido pela ordem da BFS a partir de um vértice sorteado. A visualização do grafo inteiro
+($\sim\!10^5$ vértices e $1{,}6\times10^6$ arestas) não seria legível.
+
+\begin{figure}[t]
+\includegraphics[width=.75\linewidth]{../results/figures/visualizacao_amostra.pdf}
+\caption{Visualização reduzida: \VizVertices{} vértices e \VizArestas{} arestas (azul:
+usuários; laranja: cervejas; tamanho proporcional ao grau no subgrafo).}
+\label{fig:viz}
+\end{figure}
+
+\subsection{Parte II -- Algoritmos}
+
+\input{gerado/tab_parte2_resultados}
+
+A Tabela~\ref{tab:p2res} resume os resultados dos algoritmos na MCC. A DFS no grafo
+completo encontra \DFSArvores{} árvores, o que confirma as \NComponentes{} componentes. O grafo
+não é euleriano: há \EulerImpares{} vértices de grau ímpar no grafo e \EulerImparesMCC{} na
+MCC, e o teorema dos slides exige zero (circuito) ou dois (caminho). Prim e Kruskal produzem
+árvores com o mesmo peso total, \AGMPeso{}, e $|V|-1$ arestas, como esperado; as árvores
+podem diferir em arestas de mesmo peso, que são muitas porque as notas variam em passos de 0,5. A partir da mesma origem sorteada, a maior
+distância ponderada de Dijkstra é \DijkstraMax{} e a média é \DijkstraMedia{}. Bellman-Ford não
+encontra ciclo negativo, o que já era esperado com pesos positivos. Com parada
+antecipada, ele estabiliza após \BFPassadas{} passadas e reproduz exatamente as distâncias de
+Dijkstra. Tarjan encontra \TarjanArt{} pontos de articulação e \TarjanPontes{} pontes, das
+quais \TarjanPontesFolha{} ligam um vértice de grau 1 ao restante da rede; as pontes
+refletem, portanto, sobretudo usuários ou cervejas com uma única avaliação.
+
+\input{gerado/tab_parte2_tempos}
+
+A Tabela~\ref{tab:p2tempo} apresenta os tempos na MCC, e a Figura~\ref{fig:desempenho},
+o crescimento com o tamanho (o experimento completo levou \TempoTotalDesempenho{} min). Uma
+BFS na MCC leva \TempoBFS{} s e Dijkstra \TempoDijkstra{} s, \RazaoDijkstraBFS{} vezes mais:
+a diferença vem do fator $\log V$ e, principalmente, da constante do \texttt{heapq}. As
+inclinações ajustadas contra o custo teórico (Tabela~\ref{tab:p2exp}) ficam entre \ExpMin{}
+e \ExpMax{} para BFS, DFS, eulerianidade, Tarjan, Dijkstra e Prim, isto é, o tempo cresce
+aproximadamente na proporção do custo teórico. Kruskal tem inclinação menor (\ExpKruskal{}),
+possivelmente porque sua etapa dominante, a ordenação das arestas, é executada em C pelo
+\texttt{sorted} do Python, com constante muito menor que a do restante do código.
+Os subgrafos amostrados por BFS são proporcionalmente mais densos que a MCC, pois a BFS
+alcança cedo os vértices de grau alto; por isso a inclinação contra $|V|$ isolado
+(última coluna) é menor que 1 nos quase lineares e próxima de 3 em Bellman-Ford
+(\ExpBFV{}), cujo $|E|$ cresce mais rápido que $|V|$ nas amostras. Contra $VE$, Bellman-Ford
+tem inclinação \ExpBF{}, e Floyd-Warshall tem \ExpFW{} contra $V^3$, de acordo com a teoria.
+Os ICs de Bellman-Ford são largos (e seu limite inferior chega a ser negativo), porque o
+número de arestas das amostras varia muito entre repetições.
+
+Floyd-Warshall e Bellman-Ford não foram executados na MCC na forma do slide. Extrapolando
+a razão tempo/custo medida na maior amostra, uma execução de Floyd-Warshall levaria cerca
+de \EstFWAnos{} anos e sua matriz ocuparia $\sim$\EstFWMemGB{} GB (há 15,7 GB de RAM); uma
+execução de Bellman-Ford com as $|V|-1$ passadas levaria cerca de \EstBFHoras{} h, o que
+torna inviáveis as repetições. Na MCC usamos, por isso, Bellman-Ford com parada
+antecipada, que produz o mesmo resultado.
+
+\begin{figure}[t]
+\includegraphics[width=\linewidth]{../results/figures/desempenho.pdf}
+\caption{Tempo médio (barras: IC de 95\%) em função de $|V|$ do subgrafo, em escala
+log-log. No painel esquerdo, o ponto mais à direita é a MCC inteira.}
+\label{fig:desempenho}
+\end{figure}
+
+\input{gerado/tab_parte2_expoentes}
+
+\subsection{Parte III -- Análise estrutural}
+
+\textbf{1) Small-world.} A Tabela~\ref{tab:sw} compara o grafo com os modelos. O
+comprimento médio $L=\LExato$ é da mesma ordem que o de um grafo aleatório equivalente
+($L_{\text{ER}}\approx\LERformula$ pela aproximação e \LERsim{} na instância gerada), o que
+satisfaz o primeiro critério do Apêndice A. O segundo critério ($C \gg C_{\text{ER}}$) não
+se verifica: $C=0$ porque o grafo é bipartido, e $C_{\text{ER}}\approx\CERformula$. Pela
+definição do enunciado, portanto, o grafo \textbf{não} é \textit{small-world} no sentido clássico.
+Essa conclusão, porém, decorre da modelagem, e não da ausência de agrupamento local. Usando a
+medida própria para grafos bipartidos, o agrupamento médio $cc_\bullet$ do grafo
+(\LatapyG{}) é \LatapyRazao{} vezes o do bipartido aleatório com os mesmos graus
+(\LatapyR{}), com distâncias semelhantes (\LBipR{}). No modelo de configuração, \BipDescartadas{}
+pares repetidos foram descartados (\BipDescartadasPct{} das arestas), efeito esperado
+quando há vértices de grau muito alto. O índice análogo a
+$\sigma$~\cite{humphries2008}, $\sigma_{\text{bip}}=(cc_\bullet/cc_\bullet^{\text{aleat}})/(L/L^{\text{aleat}})=\SigmaBip$,
+é maior que 1, o que indica a combinação ``distâncias curtas + agrupamento acima do acaso''
+na versão bipartida. Faz sentido para o domínio: poucos usuários muito ativos e
+cervejas muito populares ligam a rede, e usuários avaliam conjuntos de cervejas mais
+parecidos entre si do que o acaso preveria. A implicação prática é que qualquer cerveja
+está a poucos passos de qualquer usuário, o que favorece, por exemplo, recomendações
+baseadas em vizinhança de 2 ou 3 passos.
+
+\input{gerado/tab_smallworld}
+
+\textbf{2) Lei de potência.} A CCDF (Figura~\ref{fig:pl}) é aproximadamente reta até
+$k\approx 10^2$ e depois cai mais rápido. O ajuste dá $\hat\gamma=\GammaTodos$
+($k_{\min}=\KminTodos$; usuários $\GammaU$, cervejas $\GammaB$), conferido com o
+\texttt{powerlaw} (\GammaTodosPkg{}). A Tabela~\ref{tab:pl} mostra que a lei de potência é
+muito mais plausível que a exponencial, mas a lei de potência truncada e a lognormal se
+ajustam melhor (razão de verossimilhança normalizada $R<0$, $p\approx 0$). Concluímos que
+a distribuição tem cauda pesada com \textit{hubs}, como sugere o Apêndice B, mas não segue
+uma lei de potência pura em toda a faixa: há um corte para graus altos, compatível com o
+limite prático de quantas cervejas um usuário avalia e de quantas avaliações uma cerveja
+recebe em cerca de 15 anos de dados. Os valores $\hat\gamma<2$ ficam abaixo da faixa
+$2<\gamma<3$ comum em redes livres de escala; como $k_{\min}$ é pequeno, o ajuste é
+determinado principalmente pelo corpo da distribuição, e não pela cauda.
+
+\begin{figure*}[t]
+\includegraphics[width=\linewidth]{../results/figures/lei_potencia.pdf}
+\caption{CCDF empírica (cinza) e lei de potência ajustada a partir de $k_{\min}$ (vermelho).}
+\label{fig:pl}
+\end{figure*}
+
+\input{gerado/tab_potencia}
+
+\textbf{3) Robustez.} A Tabela~\ref{tab:rob} e a Figura~\ref{fig:rob} resumem as métricas A--D.
+Na remoção aleatória de 5\%, a maior componente mantém $S=\RobSAleat$ dos vértices restantes,
+o número de componentes passa de 1 para \RobBAleat{} em média (quase todas são vértices
+que perderam seu único vizinho) e a distância média estimada praticamente não muda
+(\RobCBase{} sem remoção e \RobCAleat{} após a remoção; como o valor exato sem remoção é
+\LExato{}, diferenças dessa ordem estão dentro do erro do estimador com 100 origens). Na remoção dos 5\% de maior grau, $S$ cai para \RobSAlvo{},
+surgem \RobBAlvo{} componentes, a fração de vértices isolados vai a \RobDAlvo{} e a distância
+média sobe para \RobCAlvo{}. Assim, sendo $c$ o número de componentes,
+$S_{\text{rand}} > S_{\text{cent}}$ e $c_{\text{cent}} \gg c_{\text{rand}}$, o padrão de redes com \textit{hubs} descrito por
+Albert et al.~\cite{albert2000}: a rede é robusta a falhas aleatórias e vulnerável a
+ataques direcionados.
+
+\input{gerado/tab_robustez}
+
+\begin{figure*}[t]
+\includegraphics[width=\linewidth]{../results/figures/robustez.pdf}
+\caption{Robustez: boxplots das 30 remoções aleatórias de 5\% (com média $\pm$ desvio padrão
+em azul), valor após remover os 5\% de maior grau (estrela vermelha) e valor sem remoção
+(triângulo verde).}
+\label{fig:rob}
+\end{figure*}
+
+\textbf{4) Descoberta mais interessante.} \Descoberta
+
+\textbf{5) Modelos clássicos (extra).} Nenhum modelo da Tabela~\ref{tab:sw} reproduz o grafo
+simultaneamente. Erd\H{o}s--Rényi e Watts--Strogatz têm graus concentrados em torno da média
+(Figura~\ref{fig:modelos}) e não têm \textit{hubs}; Watts--Strogatz ainda tem muitos
+triângulos, o que um grafo bipartido não pode ter. Barabási--Albert é o único dos três com cauda
+pesada e \textit{hubs}, mas sua cauda é mais leve que a do grafo real (expoente teórico
+$\gamma=3$; grau máximo \GrauMaxBA{} contra \GrauMax{}) e ele não é bipartido. O bipartido
+aleatório com os mesmos graus reproduz a distribuição de graus (por construção) e $L$, mas
+tem agrupamento bipartido menor. Concluímos que, entre os modelos clássicos, o
+Barabási--Albert é o mais próximo na distribuição de graus, mas nenhum deles descreve o grafo
+adequadamente; seria necessário um modelo bipartido com ligação preferencial.
+
+\begin{figure}[t]
+\includegraphics[width=.85\linewidth]{../results/figures/modelos_ccdf.pdf}
+\caption{CCDF de graus do grafo e dos modelos clássicos com o mesmo $n$ e grau médio
+semelhante.}
+\label{fig:modelos}
+\end{figure}
+
+% ======================================================================
+\section{Discussão crítica}\label{sec:discussao}
+
+\textbf{Modelagem.} O grafo bipartido é fiel aos dados, mas torna triviais algumas medidas
+do enunciado (triângulos e clusterização), que precisam ser complementadas pela versão
+bipartida. Uma projeção usuário--usuário teria triângulos, mas dependeria de um limiar
+arbitrário e seria muito mais densa. Os pesos $6-\bar o$ são uma convenção; outra escolha
+mudaria os caminhos mínimos e a AGM, mas não as medidas não ponderadas.
+
+\textbf{Dados.} O conjunto foi retirado de circulação a pedido do BeerAdvocate, o que limita
+a reprodutibilidade por terceiros; registramos o SHA-256 do arquivo usado. O número de
+avaliações difere em 355 do informado pelo SNAP. Avaliações sem nome de usuário (348) foram
+descartadas.
+
+\textbf{Desempenho.} As medições foram feitas em Python puro, em um notebook, com outros
+processos do sistema ativos; os valores absolutos refletem o interpretador, e não só o
+algoritmo. As constantes escondidas (por exemplo, o custo do \texttt{heapq}) explicam por que
+Dijkstra e Prim são mais lentos que BFS, mesmo sendo apenas um fator $\log V$ mais caros.
+As amostras por BFS não são subgrafos ``típicos'' do grafo: ficam mais densas que a MCC,
+o que mistura o efeito de $V$ e de $E$; por isso a comparação foi feita contra $f(V,E)$.
+
+\textbf{Aproximações.} São estimativas, e não valores exatos: $L$ dos grafos sintéticos e a
+distância média nos experimentos de robustez (BFS a partir de 200 e 100 origens), e
+$cc_\bullet$ (amostra de 2.000 vértices). O comprimento médio, o diâmetro e o raio da MCC
+real são exatos.
+
+% ======================================================================
+\section{Conclusão}\label{sec:conclusao}
+
+Construímos o grafo bipartido usuário--cerveja do \textit{web-BeerAdvocate}, com
+\NVertices{} vértices e \NArestas{} arestas, e respondemos a todas as medidas da Parte I.
+Os nove algoritmos da Parte II foram implementados conforme os slides, validados contra o
+NetworkX e medidos com intervalos de confiança; os tempos observados crescem de forma
+compatível com as complexidades teóricas. O grafo é muito esparso, quase totalmente
+conexo, com distâncias curtas (diâmetro \Diametro{}, $L=\LExato$), distribuição de graus de
+cauda pesada com corte e forte dependência de seus \textit{hubs}: a rede resiste à remoção
+aleatória de 5\% dos vértices, mas se fragmenta quando os 5\% de maior grau são removidos.
+Como trabalho futuro, pode-se analisar a evolução temporal das avaliações e projeções
+ponderadas usuário--usuário.
+
+\section*{Disponibilidade}
+Código, dados tratados, resultados e instruções de execução:
+\url{\LinkRepositorio}.
+
+\section*{Uso de inteligência artificial}
+\DeclaracaoIA
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{referencias}
+
+\end{document}

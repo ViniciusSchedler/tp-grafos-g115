@@ -1,0 +1,19 @@
+\begin{table}[t]
+\caption{Small-world: grafo real (MCC, $L$ exato) e modelos com o mesmo $n$ ($L$ estimado com 200 origens; meia-largura do IC 95\% $\le 0{,}05$).}
+\label{tab:sw}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Grafo & $L$ & $C$ & grau máx. \\
+\midrule
+BeerAdvocate & 3{,}725 & 0{,}0 & 5.782 \\
+ER (aproximação) & 3{,}332 & $3{,}18\times 10^{-4}$ & -- \\
+Erd\H{o}s--Rényi & 3{,}708 & 0{,}0003 & 57 \\
+Barabási--Albert ($m_0$=16) & 3{,}261 & 0{,}0025 & 2.024 \\
+Watts--Strogatz (k=32, p=0.1) & 4{,}646 & 0{,}5305 & 41 \\
+Bipartido aleat. & 3{,}747 & 0{,}0000 & 3.449 \\
+\midrule
+\multicolumn{4}{l}{$cc_\bullet$ (Latapy): grafo 0{,}0599 $\pm$ 0{,}0032; bip. aleat. 0{,}0288 $\pm$ 0{,}0008} \\
+\bottomrule
+\end{tabular}
+\end{table}

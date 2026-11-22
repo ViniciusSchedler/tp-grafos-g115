@@ -1,0 +1,50 @@
+aleatoria 0 28s
+aleatoria 1 55s
+aleatoria 2 82s
+aleatoria 3 109s
+aleatoria 4 141s
+aleatoria 5 207s
+aleatoria 6 304s
+aleatoria 7 368s
+aleatoria 8 400s
+aleatoria 9 430s
+aleatoria 10 461s
+aleatoria 11 492s
+aleatoria 12 523s
+aleatoria 13 554s
+aleatoria 14 584s
+aleatoria 15 614s
+aleatoria 16 642s
+aleatoria 17 700s
+aleatoria 18 744s
+aleatoria 19 811s
+aleatoria 20 919s
+aleatoria 21 1033s
+aleatoria 22 1146s
+aleatoria 23 1248s
+aleatoria 24 1307s
+aleatoria 25 1329s
+aleatoria 26 1352s
+aleatoria 27 1377s
+aleatoria 28 1402s
+aleatoria 29 1426s
+{
+  "base": {
+    "A_maior_componente": 99356,
+    "A_S_fracao_restantes": 1.0,
+    "A_S_fracao_original": 1.0,
+    "B_num_componentes": 1,
+    "C_dist_media_maior_comp": 3.8074017412309393,
+    "C_dist_max_observada": 7,
+    "D_fracao_isolados": 0.0
+  },
+  "alvo": {
+    "A_maior_componente": 40975,
+    "A_S_fracao_restantes": 0.4341123871678603,
+    "A_S_fracao_original": 0.4124058939570836,
+    "B_num_componentes": 52451,
+    "C_dist_media_maior_comp": 5.935438570800995,
+    "C_dist_max_observada": 14,
+    "D_fracao_isolados": 0.5468703648768911
+  }
+}
