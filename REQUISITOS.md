@@ -28,6 +28,6 @@ Detalhes e histórico das correções: [`AUDITORIA_FINAL.md`](AUDITORIA_FINAL.md
 | Comentário para cada tabela e figura | ✅ | artigo |
 | Template WebMedia | ✅ `webmedia.cls` oficial (zip do Overleaf) | `artigo/` |
 | PDF nomeado com a matrícula | ✅ | `artigo/223115843.pdf` |
-| Link do GitHub no relatório | ❌ placeholder `USUARIO` | `src/gerar_artigo.py` (`LINK_REPOSITORIO`) |
-| Repositório com códigos, dados tratados e README | ⚠️ pronto e commitado localmente; falta hospedar (~10 MB, maior arquivo 6,2 MB) | `tp-grafos/` |
+| Link do GitHub no relatório | ✅ https://github.com/ViniciusSchedler/tp-grafos-g115 | artigo, "Disponibilidade" |
+| Repositório com códigos, dados tratados e README | ✅ publicado no GitHub (~10 MB, maior arquivo 6,2 MB) | `tp-grafos/` |
 | Declaração de uso de IA | não exigida pelo enunciado; mantida por transparência, sem marcadores | artigo, seção final |

@@ -14,7 +14,7 @@ from grafo import RAIZ  # noqa: E402
 
 RES = os.path.join(RAIZ, "results")
 OUT = os.path.join(RAIZ, "artigo", "gerado")
-LINK_REPOSITORIO = "https://github.com/USUARIO/tp-grafos-g115"  # PENDENTE: link real
+LINK_REPOSITORIO = "https://github.com/ViniciusSchedler/tp-grafos-g115"
 
 # Declaracao de uso de IA: descreve apenas o que de fato aconteceu. Se o autor revisar o codigo e
 # o texto, pode acrescentar aqui a descricao dessa revisao.

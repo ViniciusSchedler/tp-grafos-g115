@@ -2,8 +2,8 @@
 
 Data: 22/11/2026. Revisão crítica do trabalho já desenvolvido: código, resultados e artigo.
 
-**Situação: o trabalho NÃO está concluído.** Faltam as etapas de publicação e entrega que só o
-autor pode fazer (Seção 6).
+**Situação:** repositório publicado em https://github.com/ViniciusSchedler/tp-grafos-g115 e PDF
+final gerado. Falta apenas o autor entregar `artigo/223115843.pdf` no Moodle (Seção 6).
 
 Os resultados da primeira versão foram preservados para comparação:
 
@@ -72,8 +72,8 @@ Os resultados da primeira versão foram preservados para comparação:
 | Comentário para cada tabela e figura | ✅ | artigo |
 | Template WebMedia (Overleaf) | ✅ `webmedia.cls` oficial aplicado | §4 |
 | PDF nomeado com a matrícula | ✅ | `artigo/223115843.pdf` |
-| Link do GitHub no relatório | ❌ placeholder `USUARIO` | ver §6 |
-| Repositório com código, dados tratados e README | ⚠️ pronto e commitado localmente; falta hospedar | ver §6 |
+| Link do GitHub no relatório | ✅ https://github.com/ViniciusSchedler/tp-grafos-g115 | artigo, "Disponibilidade" |
+| Repositório com código, dados tratados e README | ✅ publicado no GitHub | ver §6 |
 | Declaração de uso de IA | não exigida pelo enunciado; mantida no artigo por transparência, sem marcadores | artigo, seção final |
 
 ---
@@ -189,11 +189,11 @@ A, B e D da robustez.
 
 ## 6. O que falta para a entrega (exigências do enunciado)
 
-| Pendência | Classificação | Como |
+| Pendência | Classificação | Situação |
 |---|---|---|
-| Hospedar o repositório (GitHub ou similar) com código, dados tratados e README | obrigatória | criar o repositório vazio e enviar o conteúdo já commitado (`git remote add origin <url>`; `git push -u origin main`) |
-| Pôr o link real no artigo | obrigatória | trocar `LINK_REPOSITORIO` em `src/gerar_artigo.py`; `python src/gerar_artigo.py`; recompilar |
-| Entregar `artigo/223115843.pdf` no Moodle | obrigatória | – |
+| Hospedar o repositório com código, dados tratados e README | obrigatória | ✅ https://github.com/ViniciusSchedler/tp-grafos-g115 |
+| Pôr o link real no artigo | obrigatória | ✅ seção "Disponibilidade" |
+| Entregar `artigo/223115843.pdf` no Moodle | obrigatória | autor |
 
 Recomendações, sem exigência do professor: revisar o texto da "descoberta mais interessante" e as
 interpretações da Parte III antes de entregar. Nenhum trecho do artigo ou desta auditoria afirma
